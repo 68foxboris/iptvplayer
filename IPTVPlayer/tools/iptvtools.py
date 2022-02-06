@@ -282,7 +282,7 @@ class iptv_system:
 
     def _dataAvail(self, data):
         if None != data:
-            self.outData += data
+            self.outData += data.decode(encoding='utf-8', errors='strict')
 
     def _cmdFinished(self, code):
         printDBG("iptv_system._cmdFinished cmd[%s] code[%r]" % (self.cmd, code))
@@ -343,10 +343,8 @@ def GetPyScriptCmd(name):
     baseName = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/scripts/') + name
     if fileExists(baseName + '.py'):
         baseName += '.py'
-    elif fileExists(baseName + '.pyo'):
-        baseName += '.pyo'
     if baseName != '':
-        for item in ['python', 'python2.7', 'python2.6']:
+        for item in ['python']:
             pyPath = Which(item)
             if '' != pyPath:
                 cmd = '%s %s' % (pyPath, baseName)
@@ -595,7 +593,7 @@ class CSelOneLink():
     def getBestSortedList(self):
         printDBG('getBestSortedList')
         sortList = self.listOfLinks[::-1]
-        sortList.sort(self._cmpLinksBest)
+        sortList.sort(key=cmp_to_key(self._cmpLinksBest))
         retList = []
         tmpList = []
         for item in sortList:
@@ -610,7 +608,7 @@ class CSelOneLink():
     def getSortedLinks(self, defaultFirst=True):
         printDBG('getSortedLinks defaultFirst[%r]' % defaultFirst)
         sortList = self.listOfLinks[::-1]
-        sortList.sort(self._cmpLinks)
+        sortList.sort(key=cmp_to_key(self._cmpLinks))
         if len(self.listOfLinks) < 2 or None == self.maxRes:
             return self.listOfLinks
 
@@ -625,9 +623,9 @@ class CSelOneLink():
                     group1.append(self.listOfLinks[idx])
                 else:
                     group2.append(self.listOfLinks[idx])
-            group1.sort(self._cmpLinks)
+            group1.sort(key=cmp_to_key(self._cmpLinks))
             group1.reverse()
-            group2.sort(self._cmpLinks)
+            group2.sort(key=cmp_to_key(self._cmpLinks))
             group1.extend(group2)
             return group1
 
@@ -686,7 +684,7 @@ def printDBG(DBGtxt):
             f.close
         except Exception:
             print("======================EXC printDBG======================")
-            print(("printDBG(I): %s" % traceback.format_exc()))
+            print("printDBG(I): %s" % traceback.format_exc())
             print("========================================================")
             try:
                 msg = '%s' % traceback.format_exc()
@@ -695,7 +693,7 @@ def printDBG(DBGtxt):
                 f.close
             except Exception:
                 print("======================EXC printDBG======================")
-                print(("printDBG(II): %s" % traceback.format_exc()))
+                print("printDBG(II): %s" % traceback.format_exc())
                 print("========================================================")
 
 
@@ -1253,7 +1251,7 @@ class CSearchHistoryHelper():
                 value = line.replace('\n', '').strip()
                 if len(value) > 0:
                     try:
-                        historyList.insert(0, value.encode('utf-8', 'ignore'))
+                        historyList.insert(0, value)
                     except Exception:
                         printExc()
             file.close()
@@ -1337,6 +1335,7 @@ def ReadTextFile(filePath, encode='utf-8', errors='ignore'):
         file.close()
         if ret.startswith(codecs.BOM_UTF8):
             ret = ret[3:]
+        ret = ret.decode(encoding='utf-8', errors='strict')
         sts = True
     except Exception:
         printExc()
@@ -1382,7 +1381,7 @@ class CMoviePlayerPerHost():
                 sts = True
             else:
                 file = codecs.open(self.filePath, 'r', 'utf-8', 'ignore')
-                ret = file.read().encode('utf-8', 'ignore')
+                ret = file.read()
                 file.close()
                 activePlayer = {}
                 ret = json_loads(ret)
@@ -1404,7 +1403,7 @@ class CMoviePlayerPerHost():
                 data = {}
                 data['buffering'] = self.activePlayer['buffering']
                 data['player'] = {'value': self.activePlayer['player'].value, 'text': self.activePlayer['player'].getText()}
-                data = json_dumps(data).encode('utf-8')
+                data = json_dumps(data)
                 file = codecs.open(self.filePath, 'w', 'utf-8', 'replace')
                 file.write(data)
                 file.close
