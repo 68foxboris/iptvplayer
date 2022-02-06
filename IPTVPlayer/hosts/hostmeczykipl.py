@@ -14,7 +14,7 @@ from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
 # FOREIGN import
 ###################################################
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 ###################################################
 
 
@@ -71,7 +71,7 @@ class MeczykiPL(CBaseHostClass):
         cat = cItem.get('f_cat', '0')
 
         query = {'category': cat, 'page': page}
-        url = baseUrl + '?' + urllib.urlencode(query)
+        url = baseUrl + '?' + urllib.parse.urlencode(query)
 
         sts, data = self.getPage(url)
         if not sts:
@@ -100,13 +100,13 @@ class MeczykiPL(CBaseHostClass):
             return
 
         query['page'] = page + 1
-        url = baseUrl + '?' + urllib.urlencode(query)
+        url = baseUrl + '?' + urllib.parse.urlencode(query)
         sts, data = self.getPage(url)
         if not sts:
             return
 
         try:
-            if len(json_loads(data)['shortcuts'].keys()):
+            if len(list(json_loads(data)['shortcuts'].keys())):
                 params = dict(cItem)
                 params.update({'good_for_fav': False, 'title': _('Next page'), 'page': page + 1})
                 self.addDir(params)

@@ -44,7 +44,7 @@ class Tvn24(CBaseHostClass):
     def getStr(self, v, default=''):
         if None == v:
             v = default
-        elif type(v) == type(u''):
+        elif type(v) == type(''):
             v = v.encode('utf-8')
         return v
 

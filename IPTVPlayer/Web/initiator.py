@@ -62,7 +62,7 @@ elif os.path.exists(resolveFilename(SCOPE_PLUGINS, 'Extensions/OpenWebif/plugins
 			addExternalChild(("fancontrol", fcRoot, "E2iPlayer", settings.WebInterfaceVersion))
 			addExternalChild(("iptvplayer", IPTVwebRoot, None, None))
 		except Exception:
-			print "[E2iPlayer] exception registering Web interface in FC mode"
+			print("[E2iPlayer] exception registering Web interface in FC mode")
 	else: #user still can use IPTV web interface, but would need to mark URL manually depending on the openWebIf version
 		try:
 			addExternalChild(("iptvplayer", IPTVwebRoot, "E2iPlayer", settings.WebInterfaceVersion))
@@ -70,4 +70,4 @@ elif os.path.exists(resolveFilename(SCOPE_PLUGINS, 'Extensions/OpenWebif/plugins
 		except Exception:
 			print "[E2iPlayer] exception registering Web interface in NATIVE mode"
 else:
-	print "No known webinterface available"
+	print("No known webinterface available")

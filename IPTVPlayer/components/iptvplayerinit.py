@@ -141,7 +141,7 @@ class IPTVPlayerNotificationList(object):
                 self.empty = False
                 ret = True
             except Exception:
-                print(str(e))
+                print((str(e)))
         return ret
 
     def pop(self, popAllSameNotificationsAtOnce=True):
@@ -158,13 +158,13 @@ class IPTVPlayerNotificationList(object):
 
                 if notification.timestamp != None:
                     timestamp = time.time()
-                    self.repeatMessages = dict((k, v) for k, v in self.repeatMessages.items() if v.timestamp > timestamp)
+                    self.repeatMessages = dict((k, v) for k, v in list(self.repeatMessages.items()) if v.timestamp > timestamp)
                     if notification.messageHash in self.repeatMessages:
                         notification = None
                     else:
                         self.repeatMessages[notification.messageHash] = notification
             except Exception as e:
-                print(str(e))
+                print((str(e)))
 
             if 0 == len(self.notificationsList):
                 self.empty = True

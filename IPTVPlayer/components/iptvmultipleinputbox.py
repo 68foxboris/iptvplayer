@@ -303,7 +303,7 @@ class IPTVMultipleInputBox(Screen):
             return
 
         def VirtualKeyBoardCallBack(newTxt):
-            if isinstance(newTxt, basestring):
+            if isinstance(newTxt, str):
                 self[self.activeInput].setText(newTxt)
             self.setKeyboardMode()
 

@@ -10,8 +10,8 @@ from Plugins.Extensions.IPTVPlayer.libs.urlparserhelper import getDirectM3U8Play
 ###################################################
 # FOREIGN import
 ###################################################
-import urlparse
-import urllib
+import urllib.parse
+import urllib.request, urllib.parse, urllib.error
 try:
     import json
 except Exception:
@@ -46,7 +46,7 @@ class QuesttvCoUK(CBaseHostClass):
             if self.cm.isValidUrl(url):
                 return url
             else:
-                return urlparse.urljoin(baseUrl, url)
+                return urllib.parse.urljoin(baseUrl, url)
         addParams['cloudflare_params'] = {'domain': self.up.getDomain(baseUrl), 'cookie_file': self.COOKIE_FILE, 'User-Agent': self.USER_AGENT, 'full_url_handle': _getFullUrl}
         return self.cm.getPageCFProtection(baseUrl, addParams, post_data)
 
@@ -108,7 +108,7 @@ class QuesttvCoUK(CBaseHostClass):
                 value = self.cm.ph.getSearchGroups(item, '''value=['"]([^'^"]+?)['"]''')[0]
                 getParams[name] = value
 
-            url = 'http://c.brightcove.com/services/viewer/htmlFederated?' + urllib.urlencode(getParams)
+            url = 'http://c.brightcove.com/services/viewer/htmlFederated?' + urllib.parse.urlencode(getParams)
             sts, data = self.getPage(url)
             if sts:
                 data = self.cm.ph.getDataBeetwenMarkers(data, '"renditions":', ']', False)[1]

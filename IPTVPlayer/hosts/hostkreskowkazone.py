@@ -11,7 +11,7 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 ###################################################
 # FOREIGN import
 ###################################################
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from hashlib import md5
 try:
     import json
@@ -185,7 +185,7 @@ class KreskowkaZonePL(CBaseHostClass):
         printDBG("KreskowkaZonePL.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
 
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('szukaj?szukana=') + urllib.quote_plus(searchPattern)
+        cItem['url'] = self.getFullUrl('szukaj?szukana=') + urllib.parse.quote_plus(searchPattern)
         self.listItems(cItem, 'list_episodes')
 
     def getLinksForVideo(self, cItem):
@@ -243,7 +243,7 @@ class KreskowkaZonePL(CBaseHostClass):
                     tmp = self.cm.ph.getSearchGroups(data, '''<a[^>]+?href="([^>\s]+?)"[>\s]''')[0]
                 if tmp == '':
                     tmp = self.cleanHtmlStr(data)
-                if not self.cm.isValidUrl(tmp) and 1 <> self.up.checkHostSupport(tmp) and retry:
+                if not self.cm.isValidUrl(tmp) and 1 != self.up.checkHostSupport(tmp) and retry:
                     sts, tmp = self.cm.getPage(self.getFullUrl('images/statystyki.gif'), self.defaultParams)
                 else:
                     videoUrl = tmp

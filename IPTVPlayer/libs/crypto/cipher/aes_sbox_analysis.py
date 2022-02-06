@@ -73,7 +73,7 @@ def grpv(subbytes):
     """" Returns a list of tuples (cycle start, cycle size) """
     v = []
     z = groups(subbytes)
-    for i in z.keys():
+    for i in list(z.keys()):
         v.append([i, len(z[i])])
     return v
 
@@ -88,11 +88,11 @@ def sgv(subbytes):
 
 def main():
     cycles = grpv(sbbytes)
-    print 'The AES sbox contains ',
-    print len(cycles),
-    print 'permutation subgroups'
-    print 'The AES sbox subgroups (start, length) are:'
-    print cycles
+    print('The AES sbox contains ', end=' ')
+    print(len(cycles), end=' ')
+    print('permutation subgroups')
+    print('The AES sbox subgroups (start, length) are:')
+    print(cycles)
 
 
 # Make this test module runnable from the command prompt

@@ -19,7 +19,7 @@ Copyright (C) 2010 Hiroki Ohtani(liris)
     Boston, MA  02110-1335  USA
 
 """
-from __future__ import print_function
+
 
 import socket
 
@@ -107,7 +107,7 @@ class WebSocket(object):
     def __next__(self):
         return self.recv()
 
-    def next(self):
+    def __next__(self):
         return self.__next__()
 
     def fileno(self):
@@ -270,7 +270,7 @@ class WebSocket(object):
 
         payload: data payload to send server.
         """
-        if isinstance(payload, unicode):
+        if isinstance(payload, str):
             payload = payload.encode("utf-8")
         self.send(payload, ABNF.OPCODE_PING)
 
@@ -280,7 +280,7 @@ class WebSocket(object):
 
         payload: data payload to send server.
         """
-        if isinstance(payload, unicode):
+        if isinstance(payload, str):
             payload = payload.encode("utf-8")
         self.send(payload, ABNF.OPCODE_PONG)
 

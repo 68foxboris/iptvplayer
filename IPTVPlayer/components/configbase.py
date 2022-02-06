@@ -281,7 +281,7 @@ class ConfigBaseWidget(Screen, ConfigListScreen):
             return
         elif isinstance(currItem, ConfigText):
             def VirtualKeyBoardCallBack(curIndex, newTxt):
-                if isinstance(newTxt, basestring):
+                if isinstance(newTxt, str):
                     self["config"].list[curIndex][1].value = newTxt
             try:
                 # we need hide NumericalTextInputHelpDialog before

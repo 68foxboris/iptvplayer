@@ -11,9 +11,9 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 ###################################################
 # FOREIGN import
 ###################################################
-import urlparse
+import urllib.parse
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from copy import deepcopy
 try:
     import json
@@ -90,7 +90,7 @@ class FilmezzEU(CBaseHostClass):
             if self.cm.isValidUrl(url):
                 return url
             else:
-                return urlparse.urljoin(baseUrl, url)
+                return urllib.parse.urljoin(baseUrl, url)
 
         addParams['cloudflare_params'] = {'domain': self.up.getDomain(baseUrl), 'cookie_file': self.COOKIE_FILE, 'User-Agent': self.USER_AGENT, 'full_url_handle': _getFullUrl}
         sts, data = self.cm.getPageCFProtection(baseUrl, addParams, post_data)
@@ -160,9 +160,9 @@ class FilmezzEU(CBaseHostClass):
         for key in self.cacheFiltersKeys:
             baseKey = key[2:] # "f_"
             if key in cItem:
-                query[baseKey] = urllib.quote(cItem[key])
+                query[baseKey] = urllib.parse.quote(cItem[key])
 
-        query = urllib.urlencode(query)
+        query = urllib.parse.urlencode(query)
         if '?' in url:
             url += '&' + query
         else:
@@ -266,7 +266,7 @@ class FilmezzEU(CBaseHostClass):
                 continue
 
             if url.startswith('http://adf.ly/'):
-                url = urllib.unquote(url.rpartition('/')[2])
+                url = urllib.parse.unquote(url.rpartition('/')[2])
                 if url == '':
                     continue
 
@@ -286,7 +286,7 @@ class FilmezzEU(CBaseHostClass):
     def listSearchResult(self, cItem, searchPattern, searchType):
         printDBG("FilmezzEU.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('kereses.php?s=' + urllib.quote_plus(searchPattern))
+        cItem['url'] = self.getFullUrl('kereses.php?s=' + urllib.parse.quote_plus(searchPattern))
         self.listItems(cItem, 'explore_item')
 
     def getLinksForVideo(self, cItem):
@@ -304,7 +304,7 @@ class FilmezzEU(CBaseHostClass):
         urlTab = []
 
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:
@@ -349,7 +349,7 @@ class FilmezzEU(CBaseHostClass):
                     if imgUrl != '':
                         imgUrl = '/' + imgUrl
                     if imgUrl.startswith('/'):
-                        imgUrl = urlparse.urljoin(videoUrl, imgUrl)
+                        imgUrl = urllib.parse.urljoin(videoUrl, imgUrl)
 
                     printDBG("img URL [%s]" % imgUrl)
 
@@ -357,7 +357,7 @@ class FilmezzEU(CBaseHostClass):
                     if actionUrl != '':
                         actionUrl = '/' + actionUrl
                     if actionUrl.startswith('/'):
-                        actionUrl = urlparse.urljoin(videoUrl, actionUrl)
+                        actionUrl = urllib.parse.urljoin(videoUrl, actionUrl)
                     elif actionUrl == '':
                         actionUrl = videoUrl
 

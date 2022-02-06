@@ -108,7 +108,7 @@ class AsyncCall(object):
                     thread_id = self.Thread._thread_id
 
                 # no, look for it in the _active dict
-                for tid, tobj in threading._active.items():
+                for tid, tobj in list(threading._active.items()):
                     if tobj is self.Thread:
                         thread_id = tid
                 if None != thread_id:
@@ -473,7 +473,7 @@ class CFunctionProxyQueue:
         currThreadName = threading.currentThread().getName()
         if self.mainThreadName != currThreadName:
             printDBG("ERROR CFunctionProxyQueue.processQueue: Queue can be processed only from main thread, thread [%s] is not main thread" % currThreadName)
-            raise AssertionError, ("ERROR CFunctionProxyQueue.processQueue: Queue can be processed only from main thread, thread [%s] is not main thread" % currThreadName)
+            raise AssertionError("ERROR CFunctionProxyQueue.processQueue: Queue can be processed only from main thread, thread [%s] is not main thread" % currThreadName)
             return False
 
         if self.isQueueEmpty():

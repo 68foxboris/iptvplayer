@@ -19,7 +19,7 @@ from Plugins.Extensions.IPTVPlayer.libs.urlparserhelper import hex_md5
 from datetime import timedelta
 import time
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import unicodedata
 import base64
 from os import listdir as os_listdir, path as os_path
@@ -29,9 +29,9 @@ except Exception:
     import simplejson as json
 try:
     try:
-        from cStringIO import StringIO
+        from io import StringIO
     except Exception:
-        from StringIO import StringIO
+        from io import StringIO
     import gzip
 except Exception:
     pass

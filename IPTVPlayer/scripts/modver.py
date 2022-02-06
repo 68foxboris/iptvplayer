@@ -4,7 +4,7 @@ import sys
 
 
 def printDBG(strDat):
-    print("%s" % strDat)
+    print(("%s" % strDat))
     #print("%s" % strDat, file=sys.stderr)
 
 
@@ -19,9 +19,9 @@ if __name__ == "__main__":
         sys.path.insert(1, libsPath)
         mod = __import__('%s.%s' % (moduleDir, moduleName), globals(), locals(), [''], -1)
         if hasattr(mod, '__version__'):
-            print(mod.__version__)
+            print((mod.__version__))
         else:
-            print(mod.version())
+            print((mod.version()))
         sys.exit(0)
     except Exception as e:
         printDBG(e)

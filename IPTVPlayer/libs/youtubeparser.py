@@ -17,9 +17,9 @@ from Plugins.Extensions.IPTVPlayer.libs import ph
 # FOREIGN import
 ###################################################
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import codecs
-from urlparse import urlparse, urlunparse, parse_qsl
+from urllib.parse import urlparse, urlunparse, parse_qsl
 from datetime import timedelta
 from Components.config import config, ConfigSelection, ConfigYesNo
 ###################################################
@@ -223,7 +223,7 @@ class YouTubeParser():
         urlParts = urlparse(url)
         query = dict(parse_qsl(urlParts[4]))
         query.update(queryDict)
-        new_query = urllib.urlencode(query)
+        new_query = urllib.parse.urlencode(query)
         new_url = urlunparse((urlParts[0], urlParts[1], urlParts[2], urlParts[3], new_query, urlParts[5]))
         return new_url
 
@@ -235,7 +235,7 @@ class YouTubeParser():
         elif isinstance(node, dict):
             if kv in node:
                 yield node[kv]
-            for j in node.values():
+            for j in list(node.values()):
                 for x in self.findKeys(j, kv):
                     yield x
 

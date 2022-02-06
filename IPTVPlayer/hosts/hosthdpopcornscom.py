@@ -11,9 +11,9 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 ###################################################
 # FOREIGN import
 ###################################################
-import urlparse
+import urllib.parse
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 try:
     import json
 except Exception:
@@ -55,7 +55,7 @@ class HDPopcornsCom(CBaseHostClass):
             if self.cm.isValidUrl(url):
                 return url
             else:
-                return urlparse.urljoin(baseUrl, url)
+                return urllib.parse.urljoin(baseUrl, url)
         addParams['cloudflare_params'] = {'domain': self.up.getDomain(baseUrl), 'cookie_file': self.COOKIE_FILE, 'User-Agent': self.USER_AGENT, 'full_url_handle': _getFullUrl}
         return self.cm.getPageCFProtection(baseUrl, addParams, post_data)
 
@@ -240,7 +240,7 @@ class HDPopcornsCom(CBaseHostClass):
         printDBG("HDPopcornsCom.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
 
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('?s=' + urllib.quote_plus(searchPattern))
+        cItem['url'] = self.getFullUrl('?s=' + urllib.parse.quote_plus(searchPattern))
 
         self.listItems(cItem, 'list_episodes')
 

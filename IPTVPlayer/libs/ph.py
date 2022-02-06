@@ -54,7 +54,7 @@ def getattr(data, attrmame, flags=0):
 
 def search(data, pattern, flags=0, limits=-1):
     tab = []
-    if isinstance(pattern, basestring):
+    if isinstance(pattern, str):
         reObj = re.compile(pattern, re.IGNORECASE if flags & IGNORECASE else 0)
     else:
         reObj = pattern
@@ -91,7 +91,7 @@ def none(tab, data, start, end):
 
 
 def check(arg1, arg2=None):
-    if arg2 == None and isinstance(arg1, basestring):
+    if arg2 == None and isinstance(arg1, str):
         return lambda data, ldata, s, e: ldata.find(arg1, s, e) != -1
 
     return lambda data, ldata, s, e: arg1(arg2, ldata, s, e)
@@ -110,12 +110,12 @@ def findall(data, start, end=('',), flags=START_E | END_E, limits=-1):
     n1S = start[0]
     n1E = start[1] if len(start) > 1 else ''
     match1P = start[2] if len(start) > 2 else None
-    match1P = check(match1P) if isinstance(match1P, basestring) else match1P
+    match1P = check(match1P) if isinstance(match1P, str) else match1P
 
     n2S = end[0]
     n2E = end[1] if len(end) > 1 else ''
     match2P = end[2] if len(end) > 2 else None
-    match2P = check(match2P) if isinstance(match2P, basestring) else match2P
+    match2P = check(match2P) if isinstance(match2P, str) else match2P
 
     lastIdx = 0
     search = 1
@@ -190,12 +190,12 @@ def rfindall(data, start, end=('',), flags=START_E | END_E, limits=-1):
     n1S = start[0]
     n1E = start[1] if len(start) > 1 else ''
     match1P = start[2] if len(start) > 2 else None
-    match1P = check(match1P) if isinstance(match1P, basestring) else match1P
+    match1P = check(match1P) if isinstance(match1P, str) else match1P
 
     n2S = end[0]
     n2E = end[1] if len(end) > 1 else ''
     match2P = end[2] if len(end) > 2 else None
-    match2P = check(match2P) if isinstance(match2P, basestring) else match2P
+    match2P = check(match2P) if isinstance(match2P, str) else match2P
 
     lastIdx = len(data)
     search = 1
@@ -291,7 +291,7 @@ def clean_html(str):
         except Exception:
             printExc()
 
-    if STRIP_HTML_TAGS_C and type(u' ') != type(str):
+    if STRIP_HTML_TAGS_C and type(' ') != type(str):
         return STRIP_HTML_TAGS_C.strip_html_tags(str)
 
     str = str.replace('<', ' <')

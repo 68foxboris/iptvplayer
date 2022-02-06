@@ -64,15 +64,15 @@ class SportDeutschland(CBaseHostClass):
         v = item.get(key, None)
         if None == v:
             return default
-        return clean_html(u'%s' % v).encode('utf-8')
+        return clean_html('%s' % v).encode('utf-8')
 
     def _getJItemNum(self, item, key, default=0):
         v = item.get(key, None)
         if None != v:
             try:
-                NumberTypes = (int, long, float, complex)
+                NumberTypes = (int, int, float, complex)
             except NameError:
-                NumberTypes = (int, long, float)
+                NumberTypes = (int, int, float)
 
             if isinstance(v, NumberTypes):
                 return v
@@ -106,7 +106,7 @@ class SportDeutschland(CBaseHostClass):
             icon = self._getJItemStr(item, 'image')
             try:
                 if icon == '':
-                    icon = (u'%s' % item['images'][0]).encode('utf-8')
+                    icon = ('%s' % item['images'][0]).encode('utf-8')
             except Exception:
                 pass
             params = {'name': 'category', 'title': self._getJItemStr(item, 'title'), 'category': 'category', 'icon': icon, 'permalink': self._getJItemStr(item, 'permalink'), 'uuid': self._getJItemStr(item, 'uuid'), 'page': 1}
@@ -129,7 +129,7 @@ class SportDeutschland(CBaseHostClass):
             icon = self._getJItemStr(item, 'image')
             try:
                 if icon == '':
-                    icon = (u'%s' % item['images'][0]).encode('utf-8')
+                    icon = ('%s' % item['images'][0]).encode('utf-8')
             except Exception:
                 pass
 

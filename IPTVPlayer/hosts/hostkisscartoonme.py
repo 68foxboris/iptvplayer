@@ -12,7 +12,7 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 ###################################################
 # FOREIGN import
 ###################################################
-import urllib
+import urllib.request, urllib.parse, urllib.error
 try:
     import json
 except Exception:
@@ -82,7 +82,7 @@ class KissCartoonMe(CBaseHostClass):
         idx = 0
         while idx < len(url):
             if 128 < ord(url[idx]):
-                newUrl += urllib.quote(url[idx])
+                newUrl += urllib.parse.quote(url[idx])
             else:
                 newUrl += url[idx]
             idx += 1
@@ -395,7 +395,7 @@ class KissCartoonMe(CBaseHostClass):
     def listSearchResult(self, cItem, searchPattern, searchType):
         printDBG("KissCartoonMe.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
         cItem = dict(cItem)
-        url = self._getFullUrl('/Search/') + '?s=' + urllib.quote_plus(searchPattern)
+        url = self._getFullUrl('/Search/') + '?s=' + urllib.parse.quote_plus(searchPattern)
         cItem['url'] = url
         self.listItems(cItem, 'list_episodes')
 

@@ -14,18 +14,18 @@ from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads, dump
 from Components.config import config
 from skin import parseColor
 
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 
 class CUrlItem:
     def __init__(self, name="", url="", urlNeedsResolve=0):
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             self.name = name
         else:
             self.name = str(name)
 
         # used only for TYPE_VIDEO item
-        if isinstance(url, basestring):
+        if isinstance(url, str):
             self.url = url
         else:
             self.url = str(url)
@@ -65,22 +65,22 @@ class CDisplayListItem:
                 textColor='',
                 pinCode=''):
 
-        if isinstance(name, basestring):
+        if isinstance(name, str):
             self.name = name
         else:
             self.name = str(name)
 
-        if isinstance(description, basestring):
+        if isinstance(description, str):
             self.description = description
         else:
             self.description = str(description)
 
-        if isinstance(type, basestring):
+        if isinstance(type, str):
             self.type = type
         else:
             self.type = str(type)
 
-        if isinstance(iconimage, basestring):
+        if isinstance(iconimage, str):
             self.iconimage = iconimage
         else:
             self.iconimage = str(iconimage)
@@ -755,7 +755,7 @@ class CBaseHostClass:
 
     @staticmethod
     def getStr(v, default=''):
-        if type(v) == type(u''):
+        if type(v) == type(''):
             return v.encode('utf-8')
         elif type(v) == type(''):
             return v

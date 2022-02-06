@@ -14,7 +14,7 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 # FOREIGN import
 ###################################################
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import base64
 from copy import deepcopy
 try:
@@ -244,7 +244,7 @@ class MRPiracyGQ(CBaseHostClass, CaptchaHelper):
         if 'sort_by' in cItem and 'order' in cItem:
             uriParams[cItem['sort_by']] = cItem['order']
 
-        uriParams = urllib.urlencode(uriParams)
+        uriParams = urllib.parse.urlencode(uriParams)
         if '?' in url:
             url += '&' + uriParams
         else:
@@ -364,7 +364,7 @@ class MRPiracyGQ(CBaseHostClass, CaptchaHelper):
             return
 
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('%s.php?&searchBox=' % type) + urllib.quote_plus(searchPattern)
+        cItem['url'] = self.getFullUrl('%s.php?&searchBox=' % type) + urllib.parse.quote_plus(searchPattern)
         self.listItems(cItem, 'list_seasons')
 
     def getLinksForVideo(self, cItem):
@@ -450,7 +450,7 @@ class MRPiracyGQ(CBaseHostClass, CaptchaHelper):
         urlTab = []
 
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:

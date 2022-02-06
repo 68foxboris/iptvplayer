@@ -15,7 +15,7 @@ try:
     import json
 except Exception:
     import simplejson as json
-from urlparse import urljoin
+from urllib.parse import urljoin
 ############################################
 
 ###################################################

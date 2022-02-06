@@ -15,7 +15,7 @@ from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
 ###################################################
 # FOREIGN import
 ###################################################
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 ###################################################
 
@@ -86,7 +86,7 @@ class Fenixsite(CBaseHostClass):
             for item in itemsList:
                 letter = item['title'].decode('utf-8')[0].upper()
                 if letter.isnumeric():
-                    letter = u'#'
+                    letter = '#'
                 if letter not in subItems:
                     subItems[letter] = []
                     letters.append(letter)
@@ -172,7 +172,7 @@ class Fenixsite(CBaseHostClass):
 
     def listSearchResult(self, cItem, searchPattern, searchType):
 
-        url = self.getFullUrl('/api/private/get/search?query=%s&limit=100&f=1' % urllib.quote(searchPattern))
+        url = self.getFullUrl('/api/private/get/search?query=%s&limit=100&f=1' % urllib.parse.quote(searchPattern))
         sts, data = self.getPage(url)
         if not sts:
             return
@@ -218,7 +218,7 @@ class Fenixsite(CBaseHostClass):
                     if it.startswith('"') or it.startswith("'"):
                         apiLink += it[1:-1]
                     elif 'key' in it:
-                        apiLink += urllib.quote_plus(key)
+                        apiLink += urllib.parse.quote_plus(key)
                     elif 'count' in it:
                         apiLink += '1'
                 apiLink = self.getFullUrl(apiLink)
@@ -244,7 +244,7 @@ class Fenixsite(CBaseHostClass):
 
         data = ph.find(data, ('<div', '>', 'tab-content'), ('<div', '>', 'fstory'), flags=0)[1]
         data = ph.rfindall(data, '</div>', ('<div', '>', 'tab-pane'), flags=ph.END_S)
-        for idx in xrange(1, len(data), 2):
+        for idx in range(1, len(data), 2):
             id = ph.getattr(data[idx - 1], 'id')
             item = data[idx]
             title = titlesMap.get('#%s' % id, '')
@@ -282,7 +282,7 @@ class Fenixsite(CBaseHostClass):
     def getVideoLinks(self, videoUrl):
         printDBG("Fenixsite.getVideoLinks [%s]" % videoUrl)
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:

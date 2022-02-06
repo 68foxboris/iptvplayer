@@ -4,7 +4,7 @@ import sys
 
 
 def printDBG(strDat):
-    print("%s" % strDat)
+    print(("%s" % strDat))
     #print("%s" % strDat, file=sys.stderr)
 
 

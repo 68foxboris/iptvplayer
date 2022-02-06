@@ -23,8 +23,8 @@ from Screens.MessageBox import MessageBox
 ###################################################
 import base64
 import re
-import urlparse
-import urllib
+import urllib.parse
+import urllib.request, urllib.parse, urllib.error
 from Components.config import config, ConfigText, ConfigSelection, getConfigListEntry
 ###################################################
 
@@ -96,7 +96,7 @@ class EkinoTv(CBaseHostClass, CaptchaHelper):
             if self.cm.isValidUrl(url):
                 return url
             else:
-                return urlparse.urljoin(baseUrl, url)
+                return urllib.parse.urljoin(baseUrl, url)
         addParams['cloudflare_params'] = {'domain': self.up.getDomain(baseUrl), 'cookie_file': self.COOKIE_FILE, 'User-Agent': self.USER_AGENT, 'full_url_handle': _getFullUrl}
         return self.cm.getPageCFProtection(baseUrl, addParams, post_data)
 
@@ -266,7 +266,7 @@ class EkinoTv(CBaseHostClass, CaptchaHelper):
         printDBG("EkinoTv.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
         searchPattern = searchPattern.replace(' ', '+')
 
-        url = 'https://ekino-tv.pl/search/qf/?q=' + urllib.quote_plus(searchPattern)
+        url = 'https://ekino-tv.pl/search/qf/?q=' + urllib.parse.quote_plus(searchPattern)
         sts, data = self.getPage(url)
         if not sts:
             return

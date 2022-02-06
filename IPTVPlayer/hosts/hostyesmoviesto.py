@@ -14,8 +14,8 @@ from Plugins.Extensions.IPTVPlayer.libs.urlparserhelper import getDirectM3U8Play
 ###################################################
 import time
 import re
-import urllib
-from urlparse import urlparse
+import urllib.request, urllib.parse, urllib.error
+from urllib.parse import urlparse
 try:
     import json
 except Exception:
@@ -237,7 +237,7 @@ class YesMovies(CBaseHostClass):
     def listSearchResult(self, cItem, searchPattern, searchType):
         printDBG("YesMovies.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('movie/search/' + urllib.quote_plus(searchPattern))
+        cItem['url'] = self.getFullUrl('movie/search/' + urllib.parse.quote_plus(searchPattern))
         self.listItems(cItem, 'list_episodes')
 
     def getLinksForVideo(self, cItem, forEpisodes=False):
@@ -331,7 +331,7 @@ class YesMovies(CBaseHostClass):
         urlTab = []
 
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:

@@ -39,7 +39,7 @@ class IPTVFileHost:
                     if not line:
                         break
                     line = line.strip()
-                    if type(line) == type(u''):
+                    if type(line) == type(''):
                         line = line.encode('utf-8', 'replace')
                     if 0 == len(line) or '#' == line[0]:
                         continue

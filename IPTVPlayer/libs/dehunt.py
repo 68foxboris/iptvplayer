@@ -13,7 +13,7 @@ def _0xe35c(d, e, f):# {
 
     def redux(listad):
         j = 0
-        for c in xrange(len(listad)):
+        for c in range(len(listad)):
             b = listad[c]
             if b in h:
                 j += h.index(b) * (e**c)
@@ -41,7 +41,7 @@ def dehunt(h, u, n, t, e, r):# {
                 ooo = h[i]
             s += ooo#chr(h[i]);
             i += 1
-        for j in xrange(len(n)):
+        for j in range(len(n)):
             try:
                 bbb = chr(n[j])
             except:

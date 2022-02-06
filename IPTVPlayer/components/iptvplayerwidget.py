@@ -8,7 +8,7 @@
 
 from time import sleep as time_sleep
 from os import remove as os_remove, path as os_path
-from urllib import quote as urllib_quote
+from urllib.parse import quote as urllib_quote
 from random import shuffle as random_shuffle
 import traceback
 
@@ -1001,7 +1001,7 @@ class E2iPlayerWidget(Screen):
                     self.stopAutoPlaySequencer()
                     self.currSelIndex = currSelIndex
                     if item.pinLocked:
-                        from iptvpin import IPTVPinWidget
+                        from .iptvpin import IPTVPinWidget
                         self.session.openWithCallback(boundFunction(self.checkDirPin, self.requestListFromHost, 'ForItem', currSelIndex, '', item.pinCode), IPTVPinWidget, title=_("Enter pin"))
                     else:
                         self.requestListFromHost('ForItem', currSelIndex, '')
@@ -1079,7 +1079,7 @@ class E2iPlayerWidget(Screen):
                 if isinstance(item, CUrlItem):
                     item.urlNeedsResolve = 0 # protection from recursion
                     linkList.append(item)
-                elif isinstance(item, basestring):
+                elif isinstance(item, str):
                     linkList.append(CUrlItem(item, item, 0))
                 else:
                     printExc("selectResolvedVideoLinks: wrong resolved url type!")
@@ -1438,7 +1438,7 @@ class E2iPlayerWidget(Screen):
 
         if nextFunction and prevFunction:
             if True == protectedByPin:
-                from iptvpin import IPTVPinWidget
+                from .iptvpin import IPTVPinWidget
                 self.session.openWithCallback(boundFunction(self.checkPin, nextFunction, prevFunction), IPTVPinWidget, title=_("Enter pin"))
             else:
                 nextFunction()
@@ -1472,7 +1472,7 @@ class E2iPlayerWidget(Screen):
 
     def runConfigHostIfAllowed(self):
         if config.plugins.iptvplayer.configProtectedByPin.value:
-            from iptvpin import IPTVPinWidget
+            from .iptvpin import IPTVPinWidget
             self.session.openWithCallback(boundFunction(self.checkPin, self.runConfigHost, None), IPTVPinWidget, title=_("Enter pin"))
         else:
             self.runConfigHost()
@@ -1518,7 +1518,7 @@ class E2iPlayerWidget(Screen):
             protected = False # should never happen
 
         if protectedByPin:
-            from iptvpin import IPTVPinWidget
+            from .iptvpin import IPTVPinWidget
             self.session.openWithCallback(boundFunction(self.checkPin, self.loadHostData, self.selectHost), IPTVPinWidget, title=_("Enter pin"))
         else:
             self.loadHostData()
@@ -1577,9 +1577,9 @@ class E2iPlayerWidget(Screen):
         options = []
         for link in links:
             printDBG("selectLinkForCurrVideo: |%s| |%s|" % (link.name, link.url))
-            if type(u'') == type(link.name):
+            if type('') == type(link.name):
                 link.name = link.name.encode('utf-8', 'ignore')
-            if type(u'') == type(link.url):
+            if type('') == type(link.url):
                 link.url = link.url.encode('utf-8', 'ignore')
             options.append((link.name, link.url, link.urlNeedsResolve))
 
@@ -1611,7 +1611,7 @@ class E2iPlayerWidget(Screen):
         # retArg[2] - urlNeedsResolve
         if retArg and 3 == len(retArg):
             #check if we have URL
-            if isinstance(retArg[1], basestring):
+            if isinstance(retArg[1], str):
                 videoUrl = retArg[1]
                 if len(videoUrl) > 3:
                     #check if we need to resolve this URL
@@ -2253,7 +2253,7 @@ class E2iPlayerWidget(Screen):
            self.yellow_pressed()
         elif ret.status == RetHost.ERROR and \
              isinstance(ret.value, list) and 1 == len(ret.value) and \
-             isinstance(ret.value[0], basestring):
+             isinstance(ret.value[0], str):
            self.session.open(MessageBox, ret.value[0], type=MessageBox.TYPE_ERROR)
 
     def markItemAsViewedCallback(self, thread, ret):
@@ -2269,7 +2269,7 @@ class E2iPlayerWidget(Screen):
            self.getRefreshedCurrList()
         elif ret.status == RetHost.ERROR and \
              isinstance(ret.value, list) and 1 == len(ret.value) and \
-             isinstance(ret.value[0], basestring):
+             isinstance(ret.value[0], str):
            self.session.open(MessageBox, ret.value[0], type=MessageBox.TYPE_ERROR)
         else:
             self.checkAutoPlaySequencer()

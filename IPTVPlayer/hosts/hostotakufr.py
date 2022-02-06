@@ -10,7 +10,7 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG, printExc, rm
 ###################################################
 # FOREIGN import
 ###################################################
-import urllib
+import urllib.request, urllib.parse, urllib.error
 ###################################################
 
 
@@ -50,7 +50,7 @@ class OtakuFR(CBaseHostClass):
         try:
             url.encode('ascii')
         except Exception:
-            url = urllib.quote(url, safe="/:&?%@[]()*$!+-=|<>;")
+            url = urllib.parse.quote(url, safe="/:&?%@[]()*$!+-=|<>;")
         url = url.replace(' ', '%20')
         return url
 

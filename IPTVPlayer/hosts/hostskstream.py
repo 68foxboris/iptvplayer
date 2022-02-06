@@ -12,7 +12,7 @@ from Plugins.Extensions.IPTVPlayer.libs.urlparserhelper import unpackJSPlayerPar
 ###################################################
 # FOREIGN import
 ###################################################
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import random
 try:
     import json
@@ -92,7 +92,7 @@ class SKStream(CBaseHostClass):
         try:
             url.encode('ascii')
         except Exception:
-            url = urllib.quote(url, safe="/:&?%@[]()*$!+-=|<>;")
+            url = urllib.parse.quote(url, safe="/:&?%@[]()*$!+-=|<>;")
         url = url.replace(' ', '%20')
         return url
 
@@ -258,7 +258,7 @@ class SKStream(CBaseHostClass):
         page = cItem.get('page', 1)
 
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('recherche?s=%s' % urllib.quote_plus(searchPattern))
+        cItem['url'] = self.getFullUrl('recherche?s=%s' % urllib.parse.quote_plus(searchPattern))
         self.listItems(cItem, 'explore_item')
 
     def getLinksForVideo(self, cItem):
@@ -315,7 +315,7 @@ class SKStream(CBaseHostClass):
         urlTab = []
 
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:

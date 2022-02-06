@@ -19,8 +19,8 @@ import os
 import datetime
 import time
 import zlib
-import cookielib
-import urllib
+import http.cookiejar
+import urllib.request, urllib.parse, urllib.error
 import base64
 from hashlib import sha1
 from Components.config import config, ConfigText, getConfigListEntry
@@ -323,7 +323,7 @@ class RtlMostHU(CBaseHostClass):
             return
         page = cItem.get('page', 0)
         sts, data = self.cm.getPage(self.QUERY_URL.format(queryType), self.queryParams,
-          query.format(urllib.quote(searchPattern), page, 50))
+          query.format(urllib.parse.quote(searchPattern), page, 50))
         if not sts:
             return
         try:
@@ -430,7 +430,7 @@ class RtlMostHU(CBaseHostClass):
             if os.path.exists(self.COOKIE_FILE):
                 cj = self.cm.getCookie(self.COOKIE_FILE)
             else:
-                cj = cookielib.MozillaCookieJar()
+                cj = http.cookiejar.MozillaCookieJar()
 
             cookieNames = ['sessionToken', 'sessionSecret', 'loginHash', 'loginValid']
             cookies = [None, None, None, None]
@@ -447,7 +447,7 @@ class RtlMostHU(CBaseHostClass):
                         cookie.discard = True
             for i, cookie in enumerate(cookies):
                 if not cookie:
-                    cookie = cookielib.Cookie(version=0, name=cookieNames[i], value=None, port=None, port_specified=False,
+                    cookie = http.cookiejar.Cookie(version=0, name=cookieNames[i], value=None, port=None, port_specified=False,
                         domain='vpv.jf7ekt7r6rbm2.hu', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=True,
                         expires=2147483647, discard=False, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
                     cookies[i] = cookie

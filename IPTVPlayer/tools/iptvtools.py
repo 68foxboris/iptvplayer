@@ -18,9 +18,10 @@ from Tools.Directories import resolveFilename, fileExists, SCOPE_PLUGINS, SCOPE_
 from enigma import eConsoleAppContainer
 from Components.Language import language
 from time import sleep as time_sleep, time
-from urllib2 import Request, urlopen, URLError, HTTPError
-import urllib
-import urllib2
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import traceback
 import re
 import sys
@@ -685,7 +686,7 @@ def printDBG(DBGtxt):
             f.close
         except Exception:
             print("======================EXC printDBG======================")
-            print("printDBG(I): %s" % traceback.format_exc())
+            print(("printDBG(I): %s" % traceback.format_exc()))
             print("========================================================")
             try:
                 msg = '%s' % traceback.format_exc()
@@ -694,7 +695,7 @@ def printDBG(DBGtxt):
                 f.close
             except Exception:
                 print("======================EXC printDBG======================")
-                print("printDBG(II): %s" % traceback.format_exc())
+                print(("printDBG(II): %s" % traceback.format_exc()))
                 print("========================================================")
 
 
@@ -902,7 +903,7 @@ def FreeSpace(katalog, requiredSpace, unitDiv=1024 * 1024):
 
 def IsValidFileName(name, NAME_MAX=255):
     prohibited_characters = ['/', "\000", '\\', ':', '*', '<', '>', '|', '"']
-    if isinstance(name, basestring) and (1 <= len(name) <= NAME_MAX):
+    if isinstance(name, str) and (1 <= len(name) <= NAME_MAX):
         for it in name:
             if it in prohibited_characters:
                 return False
@@ -962,7 +963,7 @@ def mkdirs(newdir, raiseException=False):
             if tail:
                 os.mkdir(newdir)
         return True
-    except Exception, e:
+    except Exception as e:
         printDBG('Exception mkdirs["%s"]' % e)
         if raiseException:
             raise e
@@ -1004,7 +1005,7 @@ def rmtree(path, ignore_errors=False, onerror=None):
     names = []
     try:
         names = os.listdir(path)
-    except os.error, err:
+    except os.error as err:
         onerror(os.listdir, path)
     for name in names:
         fullname = os.path.join(path, name)
@@ -1017,7 +1018,7 @@ def rmtree(path, ignore_errors=False, onerror=None):
         else:
             try:
                 os.remove(fullname)
-            except os.error, err:
+            except os.error as err:
                 onerror(os.remove, fullname)
     try:
         os.rmdir(path)
@@ -1035,7 +1036,7 @@ def GetFileSize(filepath):
 def DownloadFile(url, filePath):
     printDBG('DownloadFile [%s] from [%s]' % (filePath, url))
     try:
-        downloadFile = urllib2.urlopen(url)
+        downloadFile = urllib.request.urlopen(url)
         output = open(filePath, 'wb')
         output.write(downloadFile.read())
         output.close()
@@ -1298,8 +1299,8 @@ class CSearchHistoryHelper():
                 value = itemValue
                 if None != itemType:
                     value = value + self.TYPE_SEP + itemType
-                value = value if type(u'') == type(value) else value.decode('utf-8', 'replace')
-                file.write(value + u'\n')
+                value = value if type('') == type(value) else value.decode('utf-8', 'replace')
+                file.write(value + '\n')
                 printDBG('Added pattern: "%s"' % itemValue)
                 file.close
         except Exception:
@@ -1345,7 +1346,7 @@ def ReadTextFile(filePath, encode='utf-8', errors='ignore'):
 def WriteTextFile(filePath, text, encode='utf-8', errors='ignore'):
     sts = False
     try:
-        toSave = text if type(u'') == type(text) else text.decode('utf-8', errors)
+        toSave = text if type('') == type(text) else text.decode('utf-8', errors)
         file = codecs.open(filePath, 'w', encode, errors)
         file.write(toSave)
         file.close()
@@ -1422,10 +1423,10 @@ class CMoviePlayerPerHost():
 
 def byteify(input, noneReplacement=None, baseTypesAsString=False):
     if isinstance(input, dict):
-        return dict([(byteify(key, noneReplacement, baseTypesAsString), byteify(value, noneReplacement, baseTypesAsString)) for key, value in input.iteritems()])
+        return dict([(byteify(key, noneReplacement, baseTypesAsString), byteify(value, noneReplacement, baseTypesAsString)) for key, value in input.items()])
     elif isinstance(input, list):
         return [byteify(element, noneReplacement, baseTypesAsString) for element in input]
-    elif isinstance(input, unicode):
+    elif isinstance(input, str):
         return input.encode('utf-8')
     elif input == None and noneReplacement != None:
         return noneReplacement

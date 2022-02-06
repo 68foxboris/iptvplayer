@@ -97,7 +97,7 @@ class LocalMedia(CBaseHostClass):
     def prepareCmd(self, path, start, end):
         lsdirPath = GetBinDir("lsdir")
         try:
-            os_chmod(lsdirPath, 0777)
+            os_chmod(lsdirPath, 0o777)
         except Exception:
             printExc()
         if config.plugins.iptvplayer.local_showhiddensdir.value:
@@ -643,7 +643,7 @@ class IPTVHost(CHostBase):
                 name, ext = os_path.splitext(fileName)
                 ret = self.host.sessionEx.waitForFinishOpen(GetVirtualKeyboard(), title=_('Set file name'), text=name)
                 printDBG('rename_file new name[%s]' % ret)
-                if isinstance(ret[0], basestring):
+                if isinstance(ret[0], str):
                     newPath = os_path.join(path, ret[0] + ext)
                     printDBG('rename_file new path[%s]' % newPath)
                     if not os_path.isfile(newPath) and not os_path.islink(newPath):

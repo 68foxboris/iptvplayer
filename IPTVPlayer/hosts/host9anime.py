@@ -17,7 +17,7 @@ from Plugins.Extensions.IPTVPlayer.libs.crypto.cipher.aes_cbc import AES_CBC
 # FOREIGN import
 ###################################################
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from binascii import hexlify, unhexlify
 from hashlib import md5
 ###################################################
@@ -150,7 +150,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
             if key in cItem:
                 query[baseKey] = cItem[key]
 
-        query = urllib.urlencode(query)
+        query = urllib.parse.urlencode(query)
         if '?' in url:
             url += '&' + query
         else:
@@ -231,7 +231,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
                 getParams['gresponse'] = token
 
         url = self.getFullUrl('/ajax/film/servers/{0}'.format(id))
-        url = self._getUrl(jsCode, url, urllib.urlencode(getParams), timestamp)
+        url = self._getUrl(jsCode, url, urllib.parse.urlencode(getParams), timestamp)
 
         sts, data = self.getPage(url, params)
         if not sts:
@@ -309,7 +309,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
     def listSearchResult(self, cItem, searchPattern, searchType):
         printDBG("AnimeTo.listSearchResult cItem[%s], searchPattern[%s] searchType[%s]" % (cItem, searchPattern, searchType))
         cItem = dict(cItem)
-        cItem['url'] = self.getFullUrl('search?keyword=' + urllib.quote_plus(searchPattern))
+        cItem['url'] = self.getFullUrl('search?keyword=' + urllib.parse.quote_plus(searchPattern))
         self.listItems(cItem, 'explore_item')
 
     def getLinksForVideo(self, cItem):
@@ -394,7 +394,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
         urlTab = []
 
         # mark requested link as used one
-        if len(self.cacheLinks.keys()):
+        if len(list(self.cacheLinks.keys())):
             for key in self.cacheLinks:
                 for idx in range(len(self.cacheLinks[key])):
                     if videoUrl in self.cacheLinks[key][idx]['url']:
@@ -429,14 +429,14 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
         if False:
             getParams = {'id': videoUrl.meta.get('id', ''), 'Q': '1'}
             url = self.getFullUrl('/ajax/film/update-views')
-            url = self._getUrl(jsCode, url, urllib.urlencode(getParams), timestamp)
+            url = self._getUrl(jsCode, url, urllib.parse.urlencode(getParams), timestamp)
             sts, data = self.getPage(url, params)
             if not sts:
                 return []
 
         getParams = {'id': videoUrl.meta.get('id', ''), 'random': '0'}
         url = self.getFullUrl('/ajax/episode/info')
-        url = self._getUrl(jsCode, url, urllib.urlencode(getParams), timestamp)
+        url = self._getUrl(jsCode, url, urllib.parse.urlencode(getParams), timestamp)
         sts, data = self.getPage(url, params)
         if not sts:
             return []
@@ -460,7 +460,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
                 printDBG(data)
                 printDBG("---")
                 if domain in data['grabber']:
-                    url = self._getUrl(jsCode, data['grabber'], urllib.urlencode(dict(data['params'])), timestamp) + '&mobile=0'
+                    url = self._getUrl(jsCode, data['grabber'], urllib.parse.urlencode(dict(data['params'])), timestamp) + '&mobile=0'
                 sts, data = self.getPage(url, params)
                 if not sts:
                     return []
@@ -514,7 +514,7 @@ class AnimeTo(CBaseHostClass, CaptchaHelper):
 
         getParams = {'ts': timestamp}
         #getParams = self._updateParams(getParams)
-        url = self.getFullUrl('/ajax/film/tooltip/' + id + '?' + urllib.urlencode(getParams))
+        url = self.getFullUrl('/ajax/film/tooltip/' + id + '?' + urllib.parse.urlencode(getParams))
         sts, data = self.getPage(url, params)
         if not sts:
             return []

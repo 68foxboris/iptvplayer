@@ -9,9 +9,9 @@
     2002-06-14
 """
 
-from aes import AES
-from cbc import CBC
-from base import BlockCipher, padWithPadLen, noPadding
+from .aes import AES
+from .cbc import CBC
+from .base import BlockCipher, padWithPadLen, noPadding
 
 
 class AES_CBC(CBC):

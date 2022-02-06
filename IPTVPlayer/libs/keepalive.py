@@ -104,10 +104,10 @@ EXTRA ATTRIBUTES AND METHODS
 
 # $Id: keepalive.py,v 1.17 2006/12/08 00:14:16 mstenner Exp $
 
-import urllib2
-import httplib
+import urllib.request, urllib.error, urllib.parse
+import http.client
 import socket
-import thread
+import _thread
 
 DEBUG = None
 
@@ -125,7 +125,7 @@ class ConnectionManager:
       """
 
     def __init__(self):
-        self._lock = thread.allocate_lock()
+        self._lock = _thread.allocate_lock()
         self._hostmap = {} # map hosts to a list of connections
         self._connmap = {} # map connections to host
         self._readymap = {} # map connection to ready state
@@ -133,7 +133,7 @@ class ConnectionManager:
     def add(self, host, connection, ready):
         self._lock.acquire()
         try:
-            if not self._hostmap.has_key(host):
+            if host not in self._hostmap:
                 self._hostmap[host] = []
             self._hostmap[host].append(connection)
             self._connmap[connection] = host
@@ -167,7 +167,7 @@ class ConnectionManager:
         conn = None
         self._lock.acquire()
         try:
-            if self._hostmap.has_key(host):
+            if host in self._hostmap:
                 for c in self._hostmap[host]:
                     if self._readymap[c]:
                         self._readymap[c] = 0
@@ -192,7 +192,7 @@ class KeepAliveHandler:
     def open_connections(self):
         """return a list of connected hosts and the number of connections
         to each.  [('foo.com:80', 2), ('bar.org', 1)]"""
-        return [(host, len(li)) for (host, li) in self._cm.get_all().items()]
+        return [(host, len(li)) for (host, li) in list(self._cm.get_all().items())]
 
     def close_connection(self, host):
         """close connection(s) to <host>
@@ -204,7 +204,7 @@ class KeepAliveHandler:
 
     def close_all(self):
         """close all open connections"""
-        for host, conns in self._cm.get_all().items():
+        for host, conns in list(self._cm.get_all().items()):
             for h in conns:
                 self._cm.remove(h)
                 h.close()
@@ -223,7 +223,7 @@ class KeepAliveHandler:
     def do_open(self, req):
         host = req.host
         if not host:
-            raise urllib2.URLError('no host given')
+            raise urllib.error.URLError('no host given')
 
         try:
             h = self._cm.get_ready_conn(host)
@@ -249,8 +249,8 @@ class KeepAliveHandler:
                 self._cm.add(host, h, 0)
                 self._start_transaction(h, req)
                 r = h.getresponse()
-        except (socket.error, httplib.HTTPException), err:
-            raise urllib2.URLError(err)
+        except (socket.error, http.client.HTTPException) as err:
+            raise urllib.error.URLError(err)
 
         if DEBUG:
             DEBUG.info("STATUS: %s, %s", r.status, r.reason)
@@ -287,7 +287,7 @@ class KeepAliveHandler:
             r = h.getresponse()
             # note: just because we got something back doesn't mean it
             # worked.  We'll check the version below, too.
-        except (socket.error, httplib.HTTPException):
+        except (socket.error, http.client.HTTPException):
             r = None
         except:
             # adding this block just in case we've missed
@@ -329,22 +329,22 @@ class KeepAliveHandler:
                     h.putrequest('POST', req.selector)
                 else:
                     h.putrequest('POST', req.get_selector())
-                if not req.headers.has_key('Content-type'):
+                if 'Content-type' not in req.headers:
                     h.putheader('Content-type',
                                 'application/x-www-form-urlencoded')
-                if not req.headers.has_key('Content-length'):
+                if 'Content-length' not in req.headers:
                     h.putheader('Content-length', '%d' % len(data))
             else:
                 if hasattr(req, 'selector'):
                     h.putrequest('GET', req.selector)
                 else:
                     h.putrequest('GET', req.get_selector())
-        except (socket.error, httplib.HTTPException), err:
-            raise urllib2.URLError(err)
+        except (socket.error, http.client.HTTPException) as err:
+            raise urllib.error.URLError(err)
 
         for args in self.parent.addheaders:
             h.putheader(*args)
-        for k, v in req.headers.items():
+        for k, v in list(req.headers.items()):
             h.putheader(k, v)
         h.endheaders()
         if req.data:
@@ -354,7 +354,7 @@ class KeepAliveHandler:
         return NotImplementedError
 
 
-class HTTPHandler(KeepAliveHandler, urllib2.HTTPHandler):
+class HTTPHandler(KeepAliveHandler, urllib.request.HTTPHandler):
     def __init__(self):
         KeepAliveHandler.__init__(self)
 
@@ -365,7 +365,7 @@ class HTTPHandler(KeepAliveHandler, urllib2.HTTPHandler):
         return HTTPConnection(host)
 
 
-class HTTPSHandler(KeepAliveHandler, urllib2.HTTPSHandler):
+class HTTPSHandler(KeepAliveHandler, urllib.request.HTTPSHandler):
     def __init__(self, ssl_factory=None):
         KeepAliveHandler.__init__(self)
         if not ssl_factory:
@@ -386,7 +386,7 @@ class HTTPSHandler(KeepAliveHandler, urllib2.HTTPSHandler):
             return HTTPSConnection(host)
 
 
-class HTTPResponse(httplib.HTTPResponse):
+class HTTPResponse(http.client.HTTPResponse):
     # we need to subclass HTTPResponse in order to
     # 1) add readline() and readlines() methods
     # 2) add close_connection() methods
@@ -407,9 +407,9 @@ class HTTPResponse(httplib.HTTPResponse):
 
     def __init__(self, sock, debuglevel=0, strict=0, method=None):
         if method: # the httplib in python 2.3 uses the method arg
-            httplib.HTTPResponse.__init__(self, sock, debuglevel, method)
+            http.client.HTTPResponse.__init__(self, sock, debuglevel, method)
         else: # 2.2 doesn't
-            httplib.HTTPResponse.__init__(self, sock, debuglevel)
+            http.client.HTTPResponse.__init__(self, sock, debuglevel)
         self.fileno = sock.fileno
         self.code = None
         self._rbuf = b""
@@ -419,7 +419,7 @@ class HTTPResponse(httplib.HTTPResponse):
         self._url = None     # (same)
         self._connection = None # (same)
 
-    _raw_read = httplib.HTTPResponse.read
+    _raw_read = http.client.HTTPResponse.read
 
     def close(self):
         if self.fp:
@@ -489,10 +489,10 @@ class HTTPResponse(httplib.HTTPResponse):
         return list
 
 
-class HTTPConnection(httplib.HTTPConnection):
+class HTTPConnection(http.client.HTTPConnection):
     # use the modified response class
     response_class = HTTPResponse
 
 
-class HTTPSConnection(httplib.HTTPSConnection):
+class HTTPSConnection(http.client.HTTPSConnection):
     response_class = HTTPResponse

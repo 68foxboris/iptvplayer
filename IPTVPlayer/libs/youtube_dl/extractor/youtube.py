@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import re
 import time
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 from Plugins.Extensions.IPTVPlayer.components.iptvplayerinit import TranslateTXT as _, SetIPTVPlayerLastHostError
 from Plugins.Extensions.IPTVPlayer.libs.youtube_dl.utils import *
 from Plugins.Extensions.IPTVPlayer.libs.youtube_dl.utils import _unquote
@@ -142,7 +142,7 @@ class CYTSignAlgoExtractor:
                 code.insert(0, fun)
 
             objects = self._getAllObjectsWithMethods(mainFunction)
-            for objName, methods in objects.iteritems():
+            for objName, methods in objects.items():
                 obj = self._findObject(objName, methods)
                 code.insert(0, obj)
 
@@ -385,7 +385,7 @@ class YoutubeIE(object):
         '271': 'DASH Video',
         '313': 'DASH Video',
     }
-    IE_NAME = u'youtube'
+    IE_NAME = 'youtube'
 
     def __init__(self, params={}):
         proxyURL = params.get('proxyURL', '')
@@ -419,7 +419,7 @@ class YoutubeIE(object):
             if caption_url:
                 timestamp = args['timestamp']
                 # We get the available subtitles
-                list_params = urllib.urlencode({
+                list_params = urllib.parse.urlencode({
                     'type': 'list',
                     'tlangs': 1,
                     'asrs': 1,
@@ -440,7 +440,7 @@ class YoutubeIE(object):
                     sub_lang = lang_node.attrib['lang_code']
                     sub_formats = []
                     for ext in self._SUBTITLE_FORMATS:
-                        params = urllib.urlencode({
+                        params = urllib.parse.urlencode({
                             'lang': original_lang,
                             'tlang': sub_lang,
                             'fmt': ext,
@@ -464,7 +464,7 @@ class YoutubeIE(object):
 
             sub_lang_list = {}
             for lang in caption_translation_languages.split(','):
-                lang_qs = compat_parse_qs(urllib.unquote_plus(lang))
+                lang_qs = compat_parse_qs(urllib.parse.unquote_plus(lang))
                 sub_lang = lang_qs.get('lc', [None])[0]
                 if not sub_lang:
                     continue
@@ -473,7 +473,7 @@ class YoutubeIE(object):
                     'fmt': ['vtt'],
                 })
                 sub_url = urlunparse(parsed_caption_url._replace(
-                    query=urllib.urlencode(caption_qs, True)))
+                    query=urllib.parse.urlencode(caption_qs, True)))
                 sub_tracks.append({'title': lang_qs['n'][0].encode('utf-8'), 'url': sub_url, 'lang': sub_lang.encode('utf-8'), 'ytid': len(sub_tracks), 'format': 'vtt'})
         except Exception:
             printExc()
@@ -505,7 +505,7 @@ class YoutubeIE(object):
 
                 title = (name + ' ' + lang_translated).strip()
                 params = {'lang': lang_code, 'v': video_id, 'fmt': 'vtt', 'name': name}
-                url = 'https://www.youtube.com/api/timedtext?' + urllib.urlencode(params)
+                url = 'https://www.youtube.com/api/timedtext?' + urllib.parse.urlencode(params)
                 sub_tracks.append({'title': title, 'url': url, 'lang': lang_code, 'ytid': id, 'format': 'vtt'})
         except Exception:
             printExc()
@@ -706,8 +706,7 @@ class YoutubeIE(object):
 
         def _get_urls(_manifest):
             lines = _manifest.split('\n')
-            urls = filter(lambda l: l and not l.startswith('#'),
-                            lines)
+            urls = [l for l in lines if l and not l.startswith('#')]
             return urls
         sts, manifest = self.cm.getPage(manifest_url)
         formats_urls = _get_urls(manifest)

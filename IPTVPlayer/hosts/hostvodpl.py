@@ -11,7 +11,7 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG, printExc, by
 # FOREIGN import
 ###################################################
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import random
 try:
     import json
@@ -171,9 +171,9 @@ class VODPL(CBaseHostClass):
 
         reqParams = {elementId: {'elementId': elementId, 'site': page}}
         if 'f_genres' in cItem:
-            reqParams[elementId]['genres'] = urllib.quote(cItem.get('f_genres', ''))
+            reqParams[elementId]['genres'] = urllib.parse.quote(cItem.get('f_genres', ''))
         if 'f_query' in cItem:
-            reqParams[elementId]['query'] = urllib.quote(cItem.get('f_query', ''))
+            reqParams[elementId]['query'] = urllib.parse.quote(cItem.get('f_query', ''))
         if 'f_sort' in cItem:
             reqParams[elementId]['sort'] = {cItem['f_sort']: 'desc'}
         if 'f_series' in cItem:
@@ -185,8 +185,8 @@ class VODPL(CBaseHostClass):
 
         reqParams[elementId]['filters'] = filters
 
-        baseUrl = '/_a/list.html?deviceConfig=%s&lists=' % urllib.quote('{"ckmdevice":"mobile","ckmformat":["mp4"],"geo":"pl"}')
-        url = self.getFullUrl(baseUrl + urllib.quote(json.dumps(reqParams).decode('utf-8')))
+        baseUrl = '/_a/list.html?deviceConfig=%s&lists=' % urllib.parse.quote('{"ckmdevice":"mobile","ckmformat":["mp4"],"geo":"pl"}')
+        url = self.getFullUrl(baseUrl + urllib.parse.quote(json.dumps(reqParams).decode('utf-8')))
 
         sts, data = self.getPage(url)
         if not sts:
@@ -226,7 +226,7 @@ class VODPL(CBaseHostClass):
 
         if len(self.currList) > 0:
             reqParams[elementId]['site'] = page + 1
-            url = self.getFullUrl(baseUrl + urllib.quote(json.dumps(reqParams).decode('utf-8')))
+            url = self.getFullUrl(baseUrl + urllib.parse.quote(json.dumps(reqParams).decode('utf-8')))
             sts, data = self.getPage(url)
             if not sts:
                 return
